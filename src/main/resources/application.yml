@@ -1,0 +1,35 @@
+server:
+  port: 8088
+  servlet:
+    encoding:
+      force: 'true'   # mustache 한글 깨지는 증상 해결
+
+#이 설정은 deprecated 됨
+#spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect
+
+spring:
+  profiles:
+    include: oauth
+  session:
+    store-type: jdbc    
+      
+  jpa:
+    show_sql: true
+# 이 설정으로 해야 MYSQL 버전으로 H2 사용해서 실행 쿼리 볼 수 있다. 
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        storage_engine: innodb
+# 이걸로 하면  인메모리 사용하고 실행 후 종료될 때 삭제됨
+  datasource:
+    hikari:
+      jdbc-url: jdbc:h2:mem://localhost/~/testdb;MODE=MYSQL
+  h2:
+    console:
+      enabled: true
+# 아걸로 하면 실행되고 종료되어도 데이터 살아있음 (전원 끄면 날라갈 듯)
+#  datasource:
+#    driver-class-name: org.h2.Driver
+#    url: 	
+#    username: sa
+#    password: 
