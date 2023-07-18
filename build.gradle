@@ -42,6 +42,10 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.session:spring-session-jdbc'
+    
+    // mariadb
+    implementation 'org.mariadb.jdbc:mariadb-java-client:2.6.0' // 'org.mariadb.jdbc:mariadb-java-client:2.4.1'
+    // implementation 'org.mariadb.jdbc:mariadb-java-client' // mariadb-java-client-3.0.10.jar 사용 시 에러 발생.
 }
 
 tasks.named('test') {

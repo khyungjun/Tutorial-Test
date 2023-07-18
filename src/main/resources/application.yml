@@ -4,15 +4,18 @@ server:
     encoding:
       force: 'true'   # mustache 한글 깨지는 증상 해결
 
-#이 설정은 deprecated 됨
-#spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect
+# 이 설정만 사용하는 것은 deprecated 되었다. 
+# 참고 : https://github.com/jojoldu/freelec-springboot2-webservice/issues/67#issuecomment-566523952
+# spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect
 
 spring:
+  config:
+    use-legacy-processing: true # 스프링부트 2.4 이상버전부터 profile 환경 구동방식 처리 변경으로 발생하는 오류 InvalidConfigDataPropertyException 에러 해결 ) 참고 : https://github.com/jojoldu/freelec-springboot2-webservice/issues/615
   profiles:
     include: oauth
   session:
-    store-type: jdbc    
-      
+    store-type: jdbc # application.yml에 세션 저장소를 jdbc로 선택하도록 한다.    
+    
   jpa:
     show_sql: true
 # 이 설정으로 해야 MYSQL 버전으로 H2 사용해서 실행 쿼리 볼 수 있다. 
@@ -20,16 +23,16 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
         storage_engine: innodb
-# 이걸로 하면  인메모리 사용하고 실행 후 종료될 때 삭제됨
+# 이걸로 하면  인메모리 사용하고 실행 후 종료될 때 삭제된다.
   datasource:
     hikari:
       jdbc-url: jdbc:h2:mem://localhost/~/testdb;MODE=MYSQL
   h2:
     console:
       enabled: true
-# 아걸로 하면 실행되고 종료되어도 데이터 살아있음 (전원 끄면 날라갈 듯)
+# 아걸로 하면 실행되고 종료되어도 데이터 살아있다. (전원 끄면 날라갈 듯)
 #  datasource:
 #    driver-class-name: org.h2.Driver
-#    url: 	
+#    url:   
 #    username: sa
 #    password: 
