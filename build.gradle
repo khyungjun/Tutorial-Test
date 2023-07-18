@@ -20,6 +20,17 @@ repositories {
 	maven { url 'https://repo.spring.io/snapshot' }
 }
 
+// 참고 : https://github.com/jojoldu/freelec-springboot2-webservice/issues/785
+// spring boot 2.5.0버전 이상부터는 gradle로 빌드를 할때 jar파일이 2개가 생성 된다고합니다.
+// 1. 앱이름.jar
+// 2. 앱이름-plain.jar
+// 배포시에 1번 jar 파일이 배포가 되어야 하는데 2번 plain.jar파일이 배포가 되어 위와 같은 현상이 있었습니다.
+// 그래서 빌드시에 plain.jar 파일이 생성되지 않도록 build.gradle 파일에 위와 같은 문구를 추가해 주었더니 빌드 시 plain.jar파일이 신규로 생성되지 않았습니다.
+// 그리고 기존에 있던 plain.jar파일도 삭제해 주었습니다. 그리하여 1번 jar 파일이 잘 배포 되었고 정상 구동 되었습니다.
+jar {
+	enabled = false
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-mustache'
