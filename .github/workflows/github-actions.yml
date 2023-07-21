@@ -1,3 +1,8 @@
+# 새로 추가된 내용입니다. 
+env: # (11) 환경 변수를 이름 : 값 으로 지정합니다. 자주 사용되거나, 변경될 수 있는 부분은 환경 변수로 지정하면 편하게 사용할 수 있습니다.
+  S3_BUCKET_NAME: tutorial-test-build
+  PROJECT_NAME: Tutorial-Test 
+  
 name: deploy # (0) GitHub Action에서 보여질 이름을 지정합니다. 
 
 on:
@@ -33,7 +38,7 @@ jobs:
       run: ./gradlew clean build -x test # (8) gradle wrapper를 통해 해당 프로젝트를 build 합니다.
       shell: bash
     
-    # 추가
+    # Action에서의 날짜는 실제 우리가 빌드한 날짜와 다르게 되어있는 부분을 추가합니다.
     
     - name: Get current time
       uses: 1466587594/get-current-time@v2  # (9) utcOffset: "+09:00": 해당 action의 기준이 UTC이므로 한국시간인 KST로 진행 하기 위해 offset에 +09:00 를 해줍니다.
@@ -45,3 +50,19 @@ jobs:
     - name: Show Current Time
       run: echo "CurrentTime=${{steps.current-time.outputs.formattedTime}}" # (10) 지정한 포맷대로 현재 시간을 보여줍니다.
       shell: bash
+
+    # 아래부분이 추가되는 내용입니다.
+    
+    - name: Make zip file
+      run: zip -r ./$PROJECT_NAME.zip .     # (12) 프로젝트 이름으로 해당 폴더를 모두 압축시킵니다. (빌드된 전체 폴더)
+      shell: bash
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1      # (13) aws에 해당 키 값으로 접속을 진행합니다.
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-2
+
+    - name: Upload to S3
+      run: aws s3 cp --region ap-northeast-2 ./$PROJECT_NAME.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$PROJECT_NAME.zip    # (14) s3에 프로젝트 이름에 해당하는 폴더에 zip파일을 저장합니다.
