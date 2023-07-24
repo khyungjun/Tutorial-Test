@@ -1,0 +1,75 @@
+# 새로 추가된 내용입니다. 
+
+env: # (11) 환경 변수를 이름 : 값 으로 지정합니다. 자주 사용되거나, 변경될 수 있는 부분은 환경 변수로 지정하면 편하게 사용할 수 있습니다.
+  S3_BUCKET_NAME: tutorial-test-build
+  PROJECT_NAME: Tutorial-Test 
+  CODE_DEPLOY_APP_NAME: Tutorial-Test  # (15) AWS Code Deploy 애플리케이션 이름과 그룹 이름을 추가합니다.
+  CODE_DEPLOY_GROUP_NAME: Tutorial-Test-group
+  
+name: deploy # (0) GitHub Action에서 보여질 이름을 지정합니다. 
+
+on:
+  release:
+    types: [push] # (1) push시 자동으로 실행됩니다. Action을 실행하게 할 방법을 지정합니다.
+  push: #  master 브랜치가 푸쉬되면 해당 Action을 실행합니다.
+    branches: [master] # (2) master 브랜치에서 동작합니다. 현재 만드는 Github Action의 트리거 브랜치를 지정합니다.
+  workflow_dispatch: # (3) 수동으로도 실행이 가능힙니다.
+
+
+jobs: 
+  build: 
+    runs-on: ubuntu-latest # (4) 해당 스크립트를 작동할 OS 입니다. 해당 Github Action 스크립트가 작동될 OS 환경을 지정합니다.
+    permissions: 
+      contents: read 
+      packages: write
+
+    steps:
+    - name: Checkout 
+      uses: actions/checkout@v3  # (5) 프로젝트 코드를 CheckOut합니다.    
+      
+    - name: Set up JDK 11
+      uses: actions/setup-java@v3 # (6) Github Action이 실행될 OS에 Java를 설치합니다.
+      with:
+        java-version: '11' 
+        distribution: 'temurin' 
+        
+    - name: Grant execute permission for gradlew
+      run: chmod +x ./gradlew # (7) gradle wrapper를 실행할 수 있도록 실행 권한 (+x)을 줍니다. ./gradlew를 실행하기 위함입니다.
+      shell: bash
+
+    - name: Build with Gradle
+      run: ./gradlew clean build -x test # (8) gradle wrapper를 통해 해당 프로젝트를 build 합니다.
+      shell: bash
+    
+    # Action에서의 날짜는 실제 우리가 빌드한 날짜와 다르게 되어있는 부분을 추가합니다.
+    
+    - name: Get current time
+      uses: 1466587594/get-current-time@v2  # (9) utcOffset: "+09:00": 해당 action의 기준이 UTC이므로 한국시간인 KST로 진행 하기 위해 offset에 +09:00 를 해줍니다.
+      id: current-time
+      with:
+        format: YYYY-MM-DDTHH-mm-ss 
+        utcOffset: "+09:00"
+
+    - name: Show Current Time
+      run: echo "CurrentTime=${{steps.current-time.outputs.formattedTime}}" # (10) 지정한 포맷대로 현재 시간을 보여줍니다.
+      shell: bash
+
+    # 아래부분이 추가되는 내용입니다.
+    
+    - name: Make zip file
+      run: zip -r ./$PROJECT_NAME.zip .     # (12) 프로젝트 이름으로 해당 폴더를 모두 압축시킵니다. (빌드된 전체 폴더)
+      shell: bash
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1      # (13) aws에 해당 키 값으로 접속을 진행합니다.
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-2
+
+    - name: Upload to S3
+      run: aws s3 cp --region ap-northeast-2 ./$PROJECT_NAME.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$PROJECT_NAME.zip    # (14) s3에 프로젝트 이름에 해당하는 폴더에 zip파일을 저장합니다.
+      
+    - name: Code Deploy
+      run: aws deploy create-deployment --application-name $CODE_DEPLOY_APP_NAME --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name $CODE_DEPLOY_GROUP_NAME --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$PROJECT_NAME.zip    # (16) 배포 그룹으로 해당 애플리케이션을 보냅니다.
+
