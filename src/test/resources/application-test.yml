@@ -2,6 +2,9 @@
 # test에 application.yml 파일이 없으면 main의 설정을 그대로 가져오지만 자동으로 가져오는 옵선의 범위는 application.yml 파일까지이다.
 # 즉, application-oauth.yml 파일은 test에 파일이 없다고 가져오는 파일이 아니다.
 
+# 근데... 해보니까 intelliJ에서는 위처럼 된다고 하지만 sts에서는 자동으로 적용시키지 못하나 보다...
+# 결국 해당 파일명을 application-test.yml로 바꾸고 테스트 클래스에 @SpringBootTest(properties = {"spring.config.location=classpath:application-test.yml"})를 추가하여  test 환경의 설정 파일을 적용시켰다. 
+
 server:
   servlet:
     encoding:
