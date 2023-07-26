@@ -5,7 +5,9 @@ plugins {
 }
 
 group = 'com.tutorial.test'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1-SNAPSHOT-' + new Date().format("yyyyMMddHHmmss") 
+// build.gradle은 Groovy 기반의 빌드툴이다. 당연히 Groovy 언어의 여러 문법을 사용할 수 있는데, 여기서는 new Date()로 빌드할 때마다 그 시간이 버전에 추가되도록 구성하였다.
+
 sourceCompatibility = '1.8'
 
 configurations {
