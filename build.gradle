@@ -8,7 +8,7 @@ group = 'com.tutorial.test'
 version = '0.0.1-SNAPSHOT-' + new Date().format("yyyyMMddHHmmss") 
 // build.gradle은 Groovy 기반의 빌드툴이다. 당연히 Groovy 언어의 여러 문법을 사용할 수 있는데, 여기서는 new Date()로 빌드할 때마다 그 시간이 버전에 추가되도록 구성하였다.
 
-sourceCompatibility = '1.8'
+sourceCompatibility = '11'
 
 configurations {
 	compileOnly {
@@ -45,7 +45,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.session:spring-session-jdbc'
     
-    // mariadb
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.6.0' // 'org.mariadb.jdbc:mariadb-java-client:2.4.1'
     // implementation 'org.mariadb.jdbc:mariadb-java-client' // mariadb-java-client-3.0.10.jar 사용 시 에러 발생.
 }
