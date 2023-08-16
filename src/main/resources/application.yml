@@ -4,10 +4,6 @@ server:
     encoding:
       force: 'true'   # mustache 한글 깨지는 증상 해결
 
-# 이 설정만 사용하는 것은 deprecated 되었다. 
-# 참고 : https://github.com/jojoldu/freelec-springboot2-webservice/issues/67#issuecomment-566523952
-# spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect
-
 spring:
   config:
     use-legacy-processing: true # 스프링부트 2.4 이상버전부터 profile 환경 구동방식 처리 변경으로 발생하는 오류 InvalidConfigDataPropertyException 에러 해결 ) 참고 : https://github.com/jojoldu/freelec-springboot2-webservice/issues/615
@@ -15,24 +11,23 @@ spring:
     include: oauth
   session:
     store-type: jdbc # application.yml에 세션 저장소를 jdbc로 선택하도록 한다.    
-    
-  jpa:
-    show_sql: true
-# 이 설정으로 해야 MYSQL 버전으로 H2 사용해서 실행 쿼리 볼 수 있다. 
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-        storage_engine: innodb
-# 이걸로 하면  인메모리 사용하고 실행 후 종료될 때 삭제된다.
+  
+# h2를 MYSQL 버전으로 실행하고 출력되는 쿼리 로그를 MYSQL 버전으로 변경하는 경우 이 설정만 사용하는 것은 deprecated 되었다.
+# spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect
+# 참고 : https://github.com/jojoldu/freelec-springboot2-webservice/issues/67#issuecomment-566523952
   datasource:
     hikari:
-      jdbc-url: jdbc:h2:mem://localhost/~/testdb;MODE=MYSQL
-  h2:
+      jdbc-url: jdbc:h2:mem://localhost/~/testdb;MODE=MYSQL # in-memory db인 h2 사용 
+  jpa:
+    hibernate:
+      ddl-auto: update # Entity 객체를 참고하여 애플리케이션 실행 시점에 하이버네이트에서 자동으로 DDL을 만들어주는 옵션
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect # h2를 MYSQL 모드로 실행했을 때 출력되는 쿼리 로그를 MYSQL 버전으로 변경
+        storage_engine: innodb
+        format_sql: true # To beautify or pretty print the SQL
+        show_sql: true # Show sql
+  h2: # h2 console 사용 (http://localhost:8088/h2-console)
     console:
       enabled: true
-# 아걸로 하면 실행되고 종료되어도 데이터 살아있다. (전원 끄면 날라갈 듯)
-#  datasource:
-#    driver-class-name: org.h2.Driver
-#    url:   
-#    username: sa
-#    password: 
+  
