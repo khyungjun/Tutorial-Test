@@ -1,25 +1,20 @@
-# Getting Started
+### 스프링 부트와 AWS로 혼자 구현하는 웹 서비스
 
-### Reference Documentation
-For further reference, please consider the following sections:
+## GitHub Action와 AWS S3 연동하기
 
-* [Official Gradle documentation](https://docs.gradle.org)
-* [Spring Boot Gradle Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.7.13-SNAPSHOT/gradle-plugin/reference/html/)
-* [Create an OCI image](https://docs.spring.io/spring-boot/docs/2.7.13-SNAPSHOT/gradle-plugin/reference/html/#build-image)
-* [Spring Data JPA](https://docs.spring.io/spring-boot/docs/2.7.13-SNAPSHOT/reference/htmlsingle/#data.sql.jpa-and-spring-data)
-* [Mustache](https://docs.spring.io/spring-boot/docs/2.7.13-SNAPSHOT/reference/htmlsingle/#web.servlet.spring-mvc.template-engines)
-* [Spring Web](https://docs.spring.io/spring-boot/docs/2.7.13-SNAPSHOT/reference/htmlsingle/#web)
+<br>
+Page 327 ~ 332
+책에 나와 있는 내용과 거의 흡사합니다. 변경된 내용이 없다고 생각하셔도 좋습니다.
 
-### Guides
-The following guides illustrate how to use some features concretely:
+간단하게 설명하면 깃허브 액션을 사용하면 다음과 같은 구조로 진행이 됩니다. 
 
-* [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
-* [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
-* [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
-* [Building REST services with Spring](https://spring.io/guides/tutorials/rest/)
+![image](https://user-images.githubusercontent.com/104341003/177384544-2e29c7df-4103-4406-9f78-88fc0207397a.png)
 
-### Additional Links
-These additional references should also help you:
+<br>
+<br>
+AWS S3는 파일 서버로, 이미지 파일 / 정적 파일 등을 관리하는 기능입니다.
+실제 배포는AWS CodeDeploy에서 진행되는데, AWS CodeDeploy는 저장 기능이 없기 때문에, AWS S3와 연동하여  .jar 파일을 받아 배포할 수 있도록 진행됩니다. 
 
-* [Gradle Build Scans – insights for your project's build](https://scans.gradle.com#gradle)
-
+> AWS CodeDeploy에서도 빌드와 배포 모두 가능하지만
+> 해당 실습에서는 AWS CodeDeploy는 배포를, 빌드는 GitHub Action에서 진행됩니다. 
+> 빌드없이 배포만 하는경우 AWS CodeDeploy 하나로 진행하는 경우 대응하기 어렵기 때문입니다.
